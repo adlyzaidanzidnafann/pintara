@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdlyHub - Semua Kebutuhan dalam Satu Web</title>
+
+<style>
+:root {
+  --bg: #f5f7ff;
+  --card: #ffffff;
+  --text: #20243a;
+  --muted: #737991;
+  --primary: #635bff;
+  --border: #e6e8f2;
+}
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+header {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 16px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.logo { font-size: 23px; font-weight: 800; }
+.logo span { color: var(--primary); }
+header small { color: var(--muted); }
+
+main { max-width: 1100px; margin: auto; padding: 24px 16px 50px; }
+
+.hero {
+  background: linear-gradient(120deg,#635bff,#9b65f5);
+  color: white;
+  border-radius: 22px;
+  padding: 30px 22px;
+  margin-bottom: 24px;
+}
+.hero h1 { margin: 0 0 10px; font-size: 30px; }
+.hero p { line-height: 1.6; margin-bottom: 20px; }
+
+input, textarea, select, button {
+  font: inherit;
+}
+.search {
+  width: 100%;
+  max-width: 550px;
+  padding: 14px;
+  border: 0;
+  border-radius: 12px;
+  outline: none;
+  color: #222;
+}
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 28px 0 16px;
+}
+.section-title h2 { font-size: 21px; margin: 0; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 14px;
+}
+.tool {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 19px;
+  border-radius: 17px;
+  cursor: pointer;
+  transition: .2s;
+  min-width: 0;
+}
+.tool:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+}
+.tool .emoji { font-size: 29px; }
+.tool h3 { margin: 12px 0 7px; font-size: 17px; }
+.tool p { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.tag {
+  display: inline-block;
+  background: #efeeff;
+  color: #5448e8;
+  padding: 5px 9px;
+  border-radius: 8px;
+  font-size: 11px;
+}
+.panel {
+  background: white;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  margin-top: 22px;
+}
+.panel h2 { margin-top: 0; }
+.field {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 7px 0 12px;
+  background: white;
+  color: var(--text);
+}
+.btn {
+  padding: 11px 15px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 3px 2px 3px 0;
+}
+.btn.secondary { background: #eeeefe; color: #4039b9; }
+.btn.danger { background: #d9485f; }
+.result {
+  background: #f1f0ff;
+  padding: 14px;
+  border-radius: 10px;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+.calc-display {
+  width: 100%;
+  font-size: 28px;
+  text-align: right;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 7px;
+}
+.calc-grid button {
+  padding: 16px 4px;
+  border: 0;
+  background: #f0f1fa;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.calc-grid button:hover { background: #dedcff; }
+.task {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+.task label { display: inline; }
+.task input { margin-right: 9px; }
+.done { text-decoration: line-through; color: var(--muted); }
+.muted { color: var(--muted); font-size: 13px; }
+footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 25px 10px;
+  font-size: 13px;
+}
+
+@media(max-width:700px) {
+  .grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .tool { padding: 14px; }
+  .hero h1 { font-size: 25px; }
+}
+@media(max-width:390px) {
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">Adly<span>Hub</span> ✨</div>
+  <small>Satu web, banyak solusi.</small>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Semua kebutuhanmu, satu tempat.</h1>
+    <p>Belajar, berhitung, menulis, mengatur uang,
+    dan menyelesaikan kegiatan sehari-hari dengan mudah.</p>
+    <input id="search" class="search"
+      placeholder="🔎 Cari alat yang kamu butuhkan..."
+      oninput="renderTools()">
+  </section>
+
+  <div class="section-title">
+    <h2>Jelajahi fitur</h2>
+    <span class="muted" id="count"></span>
+  </div>
+
+  <div class="grid" id="toolGrid"></div>
+
+  <section id="workspace" class="panel" hidden>
+    <div style="display:flex;justify-content:space-between;gap:10px">
+      <h2 id="panelTitle">Alat</h2>
+      <button class="btn secondary" onclick="closeTool()">Tutup ✕</button>
+    </div>
+    <div id="panelContent"></div>
+  </section>
+</main>
+
+<footer>
+  AdlyHub © 2026 · Dibuat untuk membantu aktivitas sehari-hari.
+  <br>Catatan dan data keuangan disimpan di browser perangkat ini.
+</footer>
+
+<script>
+const tools = [
+  {id:"calc",icon:"🧮",name:"Kalkulator",
+   desc:"Hitung matematika dengan cepat.",cat:"Belajar"},
+  {id:"tasks",icon:"✅",name:"Daftar Tugas",
+   desc:"Atur pekerjaan dan tandai yang selesai.",cat:"Produktivitas"},
+  {id:"notes",icon:"📝",name:"Catatan Pribadi",
+   desc:"Simpan ide dan catatan penting.",cat:"Produktivitas"},
+  {id:"age",icon:"🎂",name:"Penghitung Umur",
+   desc:"Hitung usia dari tanggal lahir.",cat:"Utilitas"},
+  {id:"words",icon:"✍️",name:"Penghitung Kata",
+   desc:"Hitung kata, karakter, dan paragraf.",cat:"Menulis"},
+  {id:"money",icon:"💰",name:"Catatan Keuangan",
+   desc:"Catat pemasukan dan pengeluaran.",cat:"Keuangan"},
+  {id:"quiz",icon:"🧠",name:"Kuis Pengetahuan",
+   desc:"Uji pengetahuan umum sambil belajar.",cat:"Belajar"},
+  {id:"ideas",icon:"💡",name:"Generator Ide",
+   desc:"Temukan inspirasi untuk tulisan.",cat:"Kreatif"}
+];
+
+function renderTools(){
+  const q = document.getElementById("search").value.toLowerCase();
+  const filtered = tools.filter(t =>
+    (t.name+" "+t.desc+" "+t.cat).toLowerCase().includes(q)
+  );
+  document.getElementById("count").textContent =
+    filtered.length+" fitur";
+  document.getElementById("toolGrid").innerHTML =
+    filtered.map(t => `
+      <div class="tool" onclick="openTool('${t.id}')">
+        <div class="emoji">${t.icon}</div>
+        <h3>${t.name}</h3>
+        <p>${t.desc}</p>
+        <span class="tag">${t.cat}</span>
+      </div>
+    `).join("");
+}
+renderTools();
+
+function safeText(s){
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  }[c]));
+}
+function getData(key, fallback){
+  try {
+    const value = localStorage.getItem("adlyhub_"+key);
+    return value === null ? fallback : JSON.parse(value);
+  } catch(e) { return fallback; }
+}
+function saveData(key, value){
+  try {
+    localStorage.setItem("adlyhub_"+key,JSON.stringify(value));
+    return true;
+  } catch(e) {
+    alert("Penyimpanan gagal. Periksa ruang penyimpanan browser.");
+    return false;
+  }
+}
+function closeTool(){
+  document.getElementById("workspace").hidden=true;
+}
+function openTool(id){
+  const t=tools.find(x=>x.id===id);
+  const panel=document.getElementById("workspace");
+  document.getElementById("panelTitle").textContent=t.name;
+  const c=document.getElementById("panelContent");
+  panel.hidden=false;
+
+  if(id==="calc") calc(c);
+  if(id==="tasks") tasks(c);
+  if(id==="notes") notes(c);
+  if(id==="age") age(c);
+  if(id==="words") words(c);
+  if(id==="money") money(c);
+  if(id==="quiz") quiz(c);
+  if(id==="ideas") ideas(c);
+
+  panel.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+// KALKULATOR
+function calc(c){
+  c.innerHTML=`
+    <input id="display" class="calc-display" value="0" readonly>
+    <div class="calc-grid">
+      ${["7","8","9","÷","4","5","6","×",
+         "1","2","3","−","0",".","C","+",
+         "(",")","%","="].map(x=>
+        `<button onclick="calcPress('${x}')">${x}</button>`
+      ).join("")}
+    </div>
+    <p class="muted">Gunakan tanda kurung untuk mengatur operasi.</p>`;
+}
+function calcPress(x){
+  const d=document.getElementById("display");
+  if(!d)return;
+  if(x==="C"){d.value="0";return;}
+  if(x==="="){
+    try{
+      let s=d.value.replace(/×/g,"*").replace(/÷/g,"/")
+        .replace(/−/g,"-");
+      if(!/^[0-9+\-*/().%\s]+$/.test(s)) throw Error();
+      if(!s.trim() || !/[0-9)]$/.test(s)) throw Error();
+      // Persen sederhana: 50% berarti 50/100.
+      s=s.replace(/(\d+(?:\.\d+)?)%/g,"($1/100)");
+      const result=Function('"use strict";return ('+s+')')();
+      if(!Number.isFinite(result))throw Error();
+      d.value=String(Number(result.toFixed(10)));
+    }catch(e){d.value="Periksa hitungan";}
+    return;
+  }
+  if(d.value==="0"||d.value==="Periksa hitungan")d.value=x;
+  else d.value+=x;
+}
+
+// DAFTAR TUGAS
+function tasks(c){
+  let list=getData("tasks",[]);
+  c.innerHTML=`
+    <input id="taskInput" class="field" placeholder="Apa yang ingin kamu kerjakan?">
+    <button class="btn" onclick="addTask()">+ Tambah tugas</button>
+    <div id="taskList"></div>
+    <button class="btn danger" onclick="clearTasks()">Hapus semua</button>`;
+  drawTasks();
+}
+function addTask(){
+  const input=document.getElementById("taskInput");
+  if(!input.value.trim())return;
+  const list=getData("tasks",[]);
+  list.push({text:input.value.trim(),done:false,id:Date.now()});
+  if(saveData("tasks",list))input.value="";
+  drawTasks();
+}
+function drawTasks(){
+  const el=document.getElementById("taskList");
+  if(!el)return;
+  const list=getData("tasks",[]);
+  el.innerHTML=list.map(t=>`
+    <div class="task">
+      <input type="checkbox" ${t.done?"checked":""}
+        onchange="toggleTask(${t.id})">
+      <span class="${t.done?"done":""}">${safeText(t.text)}</span>
+      <button class="btn danger" onclick="deleteTask(${t.id})">Hapus</button>
+    </div>`).join("")||'<p class="muted">Belum ada tugas.</p>';
+}
+function toggleTask(id){
+  const a=getData("tasks",[]);
+  const t=a.find(x=>x.id===id);
+  if(t)t.done=!t.done;
+  saveData("tasks",a);drawTasks();
+}
+function deleteTask(id){
+  saveData("tasks",getData("tasks",[]).filter(t=>t.id!==id));
+  drawTasks();
+}
+function clearTasks(){
+  if(confirm("Hapus semua tugas?")){
+    saveData("tasks",[]);drawTasks();
+  }
+}
+
+// CATATAN
+function notes(c){
+  c.innerHTML=`
+    <textarea id="noteText" class="field" rows="9"
+      placeholder="Tulis catatanmu di sini..."></textarea>
+    <button class="btn" onclick="saveNote()">Simpan catatan</button>
+    <button class="btn secondary" onclick="loadNote()">Muat catatan</button>
+    <p id="noteStatus" class="muted"></p>`;
+  document.getElementById("noteText").value=getData("notes","");
+}
+function saveNote(){
+  const v=document.getElementById("noteText").value;
+  if(saveData("notes",v))
+    document.getElementById("noteStatus").textContent="Catatan tersimpan.";
+}
+function loadNote(){
+  document.getElementById("noteText").value=getData("notes","");
+}
+
+// PENGHITUNG UMUR
+function age(c){
+  c.innerHTML=`
+    <label>Tanggal lahir</label>
+    <input id="birth" class="field" type="date" max="${new Date().toLocaleDateString('en-CA')}">
+    <button class="btn" onclick="calcAge()">Hitung umur</button>
+    <div id="ageResult" class="result"></div>`;
+}
+function calcAge(){
+  const value=document.getElementById("birth").value;
+  const out=document.getElementById("ageResult");
+  if(!value){out.textContent="Pilih tanggal lahir terlebih dahulu.";return;}
+  const b=new Date(value+"T00:00:00");
+  const now=new Date();
+  if(isNaN(b.getTime())||b>now){out.textContent="Tanggal tidak valid.";return;}
+  let y=now.getFullYear()-b.getFullYear();
+  let m=now.getMonth()-b.getMonth();
+  let d=now.getDate()-b.getDate();
+  if(d<0){
+    m--;
+    d+=new Date(now.getFullYear(),now.getMonth(),0).getDate();
+  }
+  if(m<0){y--;m+=12;}
+  out.textContent=`Umur: ${y} tahun, ${m} bulan, ${d} hari.`;
+}
+
+// PENGHITUNG KATA
+function words(c){
+  c.innerHTML=`
+    <textarea id="wordText" class="field" rows="8"
+      placeholder="Tempel atau tulis teks di sini..."
+      oninput="countWords()"></textarea>
+    <div id="wordResult" class="result">Ketik teks untuk mulai menghitung.</div>`;
+}
+function countWords(){
+  const s=document.getElementById("wordText").value;
+  const words=s.trim()?s.trim().split(/\s+/u).length:0;
+  const paragraphs=s.trim()?s.trim().split(/\n\s*\n/).length:0;
+  document.getElementById("wordResult").textContent=
+    `Kata: ${words} | Karakter: ${s.length} | Tanpa spasi: ${s.replace(/\s/g,"").length} | Paragraf: ${paragraphs}`;
+}
+
+// CATATAN KEUANGAN
+function money(c){
+  const list=getData("money",[]);
+  c.innerHTML=`
+    <label>Jenis transaksi</label>
+    <select id="moneyType" class="field">
+      <option value="in">Pemasukan</option>
+      <option value="out">Pengeluaran</option>
+    </select>
+    <label>Keterangan</label>
+    <input id="moneyDesc" class="field" placeholder="Contoh: uang jajan">
+    <label>Nominal (Rp)</label>
+    <input id="moneyAmount" class="field" type="number" min="1" step="1" placeholder="10000">
+    <button class="btn" onclick="addMoney()">Simpan transaksi</button>
+    <div id="moneySummary" class="result"></div>
+    <div id="moneyList"></div>
+    <button class="btn danger" onclick="resetMoney()">Hapus semua transaksi</button>`;
+  drawMoney();
+}
+function rupiah(n){
+  return new Intl.NumberFormat("id-ID",{
+    style:"currency",currency:"IDR",maximumFractionDigits:0
+  }).format(n);
+}
+function addMoney(){
+  const desc=document.getElementById("moneyDesc").value.trim();
+  const amount=Number(document.getElementById("moneyAmount").value);
+  if(!desc||!Number.isSafeInteger(amount)||amount<=0){
+    alert("Isi keterangan dan nominal yang valid.");return;
+  }
+  const list=getData("money",[]);
+  list.unshift({
+    id:Date.now(),desc,type:document.getElementById("moneyType").value,amount
+  });
+  if(saveData("money",list))openTool("money");
+}
+function drawMoney(){
+  const list=getData("money",[]);
+  const el=document.getElementById("moneySummary");
+  if(!el)return;
+  const ins=list.filter(x=>x.type==="in").reduce((s,x)=>s+x.amount,0);
+  const outs=list.filter(x=>x.type==="out").reduce((s,x)=>s+x.amount,0);
+  el.innerHTML=`Pemasukan: <b>${rupiah(ins)}</b><br>
+    Pengeluaran: <b>${rupiah(outs)}</b><br>
+    Saldo tercatat: <b>${rupiah(ins-outs)}</b>`;
+  document.getElementById("moneyList").innerHTML=
+    list.map(x=>`<div class="task">
+      ${safeText(x.desc)} — ${x.type==="in"?"+":"−"}${rupiah(x.amount)}
+    </div>`).join("")||'<p class="muted">Belum ada transaksi.</p>';
+}
+function resetMoney(){
+  if(confirm("Hapus seluruh catatan keuangan?")){
+    saveData("money",[]);openTool("money");
+  }
+}
+
+// KUIS
+function quiz(c){
+  const qs=[
+    {q:"Planet yang dikenal sebagai Planet Merah adalah...",a:["Venus","Mars","Jupiter"],correct:1},
+    {q:"Hasil dari 12 × 8 adalah...",a:["86","92","96"],correct:2},
+    {q:"Hewan mamalia terbesar adalah...",a:["Gajah Afrika","Paus biru","Jerapah"],correct:1},
+    {q:"Lambang kimia untuk air adalah...",a:["CO2","O2","H2O"],correct:2},
+    {q:"Indonesia memproklamasikan kemerdekaan pada tahun...",a:["1942","1945","1950"],correct:1}
+  ];
+  const q=qs[Math.floor(Math.random()*qs.length)];
+  c.innerHTML=`<h3>${q.q}</h3>
+    ${q.a.map((a,i)=>`<button class="btn secondary"
+      onclick="answerQuiz(${i},${q.correct})">${a}</button>`).join("")}
+    <div id="quizResult" class="result" hidden></div>
+    <button class="btn" onclick="openTool('quiz')">Soal berikutnya</button>`;
+}
+function answerQuiz(i,correct){
+  const r=document.getElementById("quizResult");
+  r.hidden=false;
+  r.textContent=i===correct?"Benar! Hebat 🎉":"Belum tepat. Coba soal berikutnya!";
+}
+
+// GENERATOR IDE
+function ideas(c){
+  c.innerHTML=`
+    <label>Pilih kategori ide</label>
+    <select id="ideaCategory" class="field">
+      <option value="belajar">Belajar</option>
+      <option value="konten">Konten media sosial</option>
+      <option value="usaha">Ide usaha</option>
+      <option value="cerita">Cerita kreatif</option>
+    </select>
+    <button class="btn" onclick="generateIdea()">Buat ide</button>
+    <div id="ideaResult" class="result">Ide baru akan muncul di sini.</div>`;
+}
+function generateIdea(){
+  const data={
+    belajar:[
+      "Buat rangkuman satu topik dalam lima poin.",
+      "Jelaskan konsep pelajaran menggunakan contoh sehari-hari.",
+      "Buat kuis lima soal untuk teman sekelas."
+    ],
+    konten:[
+      "Bagikan tips sederhana yang berguna bagi orang lain.",
+      "Buat cerita tentang pelajaran berharga hari ini.",
+      "Buat daftar tiga hal menarik yang baru kamu pelajari."
+    ],
+    usaha:[
+      "Cari kebutuhan sederhana di lingkungan sekitar.",
+      "Buat paket produk yang praktis dan terjangkau.",
+      "Buat katalog digital yang menampilkan produk dan harga."
+    ],
+    cerita:[
+      "Seorang anak menemukan buku yang bisa menjawab satu pertanyaan setiap hari.",
+      "Sebuah kota memiliki perpustakaan yang hanya muncul saat hujan.",
+      "Dua sahabat bekerja sama memecahkan misteri di sekolah."
+    ]
+  };
+  const cat=document.getElementById("ideaCategory").value;
+  const arr=data[cat];
+  document.getElementById("ideaResult").textContent=
+    arr[Math.floor(Math.random()*arr.length)];
+}
+</script>
+</body>
+</html>
